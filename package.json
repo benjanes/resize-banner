@@ -18,5 +18,8 @@
   "homepage": "https://github.com/benjanes/resize-banner#readme",
   "dependencies": {
     "replace": "^0.3.0"
+  },
+  "bin": {
+    "resize-banner": "bin/index.js"
   }
 }
