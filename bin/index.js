@@ -207,7 +207,7 @@ function checkSizeVars(path, isExpanded) {
 }
 
 function getNewSizes(sizes, arg) {
-	if (arg.match(/\d+x\d+/)) {
+	if (arg.match(/^\d+x\d+$/)) {
 		if (!sizes.hasOwnProperty('width')) {
 			sizes.width = arg.split('x')[0];
 			sizes.height = arg.split('x')[1];
