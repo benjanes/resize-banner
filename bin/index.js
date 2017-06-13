@@ -186,13 +186,13 @@ function checkSizeVars(path, isExpanded) {
 	var sizes = fs.readFileSync(path, 'utf8')
 		.split('\n')
 		.reduce(function(sizes, currLine) {
-			if (~currLine.indexOf('$width:')) {
+			if (/\$width\:\s?\d+px;/.test(currLine)) {
 				sizes.width = currLine.match(/\d+/g)[0];
-			} else if (~currLine.indexOf('$height:')) {
+			} else if (/\$height\:\s?\d+px;/.test(currLine)) {
 				sizes.height = currLine.match(/\d+/g)[0];
-			} else if (~currLine.indexOf('$expanded-width:')) {
+			} else if (/\$expanded-width\:\s?\d+px;/.test(currLine)) {
 				sizes.widthExpanded = currLine.match(/\d+/g)[0];
-			} else if (~currLine.indexOf('$expanded-height:')) {
+			} else if (/\$expanded-height\:\s?\d+px;/.test(currLine)) {
 				sizes.heightExpanded = currLine.match(/\d+/g)[0];
 			}
 			return sizes;
