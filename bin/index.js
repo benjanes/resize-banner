@@ -27,132 +27,56 @@ console.log('With new sizes:');
 console.log(newSizes);
 
 // replace dimensions in test path
-replace({
-	regex: /\.width\)\.not\.toBeGreaterThan\(\d+\)/,
-	replacement: '.width).not.toBeGreaterThan(' + newSizes.width + ')',
-	paths: testPath
-});
-
-replace({
-	regex: /\.height\)\.not\.toBeGreaterThan\(\d+\)/,
-	replacement: '.height).not.toBeGreaterThan(' + newSizes.height + ')',
-	paths: testPath
-});
-
+replaceVals(/\.width\)\.not\.toBeGreaterThan\(\d+\)/, '.width).not.toBeGreaterThan(' + newSizes.width + ')', testPath);
+replaceVals(/\.height\)\.not\.toBeGreaterThan\(\d+\)/, '.height).not.toBeGreaterThan(' + newSizes.height + ')', testPath);
 
 // replace dimensions in html and gulpfile
-replace({
-	regex: oldSizes.width,
-	replacement: '_oldWidth_',
-	paths: paths
-});
-replace({
-	regex: oldSizes.height,
-	replacement: '_oldHeight_',
-	paths: paths
-});
+replaceVals(oldSizes.width, '_oldWidth_', paths);
+replaceVals(oldSizes.height, '_oldHeight_', paths);
+
 if (oldSizes.widthExpanded) {
-	replace({
-		regex: oldSizes.widthExpanded,
-		replacement: '_oldWidthExpanded_',
-		paths: paths
-	});
-	replace({
-		regex: oldSizes.heightExpanded,
-		replacement: '_oldHeightExpanded_',
-		paths: paths
-	});
+	replaceVals(oldSizes.widthExpanded, '_oldWidthExpanded_', paths);
+	replaceVals(oldSizes.heightExpanded, '_oldHeightExpanded_', paths);
 }
 
-replace({
-	regex: '_oldWidth_',
-	replacement: newSizes.width,
-	paths: paths
-});
-replace({
-	regex: '_oldHeight_',
-	replacement: newSizes.height,
-	paths: paths
-});
+replaceVals('_oldWidth_', newSizes.width, paths);
+replaceVals('_oldHeight_', newSizes.height, paths);
+
 if (oldSizes.widthExpanded) {
-	replace({
-		regex: '_oldWidthExpanded_',
-		replacement: newSizes.widthExpanded,
-		paths: paths
-	});
-	replace({
-		regex: '_oldHeightExpanded_',
-		replacement: newSizes.heightExpanded,
-		paths: paths
-	});
+	replaceVals('_oldWidthExpanded_', newSizes.widthExpanded, paths);
+	replaceVals('_oldHeightExpanded_', newSizes.heightExpanded, paths);
 }
 
 if (oldSizes.widthExpanded) {
-	replace({
-		regex: oldSizes.widthExpanded + 'x' + oldSizes.heightExpanded,
-		replacement: '_oldWidthExpandedXoldHeightExpanded_',
-		paths: paths
-	});
-	replace({
-		regex: '_oldWidthExpandedXoldHeightExpanded_',
-		replacement: newSizes.widthExpanded + 'x' + newSizes.heightExpanded,
-		paths: paths
-	});
+	replaceVals(oldSizes.widthExpanded + 'x' + oldSizes.heightExpanded, '_oldWidthExpandedXoldHeightExpanded_', paths);
+	replaceVals('_oldWidthExpandedXoldHeightExpanded_', newSizes.widthExpanded + 'x' + newSizes.heightExpanded, paths);
 }
 
 // replace dimensions in index.js files
 keys.forEach(function(key) {
-	replace({
-		regex: oldSizes[key],
-		replacement: '_old' + key + '_',
-		paths: indexJSPaths
-	});
+	replaceVals(oldSizes[key], '_old' + key + '_', indexJSPaths);
 });
 keys.forEach(function(key) {
-	replace({
-		regex: '_old' + key + '_',
-		replacement: newSizes[key],
-		paths: indexJSPaths
-	});
+	replaceVals('_old' + key + '_', newSizes[key], indexJSPaths);
 });
 
 
 // replace dimensions in sass
-replace({
-	regex: /\$width\: \d+/,
-	replacement: '$width: ' + newSizes.width,
-	paths: sassPaths
-});
-replace({
+replaceVals(/\$width\: \d+/, '$width: ' + newSizes.width, sassPaths);
+replaceVals({
 	regex: /\$height\: \d+/,
 	replacement: '$height: ' + newSizes.height,
 	paths: sassPaths
 });
 
 if (oldSizes.widthExpanded) {
-	replace({
-		regex: /\$expanded\-width\: \d+/,
-		replacement: '$expanded-width: ' + newSizes.widthExpanded,
-		paths: sassPaths
-	});
-	replace({
-		regex: /\$expanded\-height\: \d+/,
-		replacement: '$expanded-height: ' + newSizes.heightExpanded,
-		paths: sassPaths
-	});
+	replaceVals(/\$expanded\-width\: \d+/, '$expanded-width: ' + newSizes.widthExpanded, sassPaths);
+	replaceVals(/\$expanded\-height\: \d+/, '$expanded-height: ' + newSizes.heightExpanded, sassPaths);
 }
 
 if (expandedSassPath.length) {
-	replace({
-		regex: /\$width\: \d+/,
-		replacement: '$width: ' + newSizes.widthExpanded,
-		paths: expandedSassPath
-	});
-	replace({
-		regex: /\$height\: \d+/,
-		replacement: '$height: ' + newSizes.heightExpanded,
-		paths: expandedSassPath
-	});
+	replaceVals(/\$width\: \d+/, '$width: ' + newSizes.widthExpanded, expandedSassPath);
+	replaceVals(/\$height\: \d+/, '$height: ' + newSizes.heightExpanded, expandedSassPath);
 }
 
 console.log('Done replacing sizes!');
@@ -226,4 +150,12 @@ function combineSizes(sizes, sizeObj) {
 		}
 	}
 	return sizes;
+}
+
+function replaceVals(search, replace, paths) {
+	replace({
+		regex: search,
+		replacement: replace,
+		paths: paths
+	});
 }
