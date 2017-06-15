@@ -1,5 +1,4 @@
 #! /usr/bin/env node
-
 var fs = require('fs');
 var replace = require('replace');
 
@@ -21,65 +20,7 @@ var oldSizes = sassPaths
 
 var keys = Object.keys(oldSizes);
 
-console.log('Starting to replace old sizes:');
-console.log(oldSizes);
-console.log('With new sizes:');
-console.log(newSizes);
-
-// replace dimensions in test path
-replaceVals(/\.width\)\.not\.toBeGreaterThan\(\d+\)/, '.width).not.toBeGreaterThan(' + newSizes.width + ')', testPath);
-replaceVals(/\.height\)\.not\.toBeGreaterThan\(\d+\)/, '.height).not.toBeGreaterThan(' + newSizes.height + ')', testPath);
-
-// replace dimensions in html and gulpfile
-replaceVals(oldSizes.width, '_oldWidth_', paths);
-replaceVals(oldSizes.height, '_oldHeight_', paths);
-
-if (oldSizes.widthExpanded) {
-	replaceVals(oldSizes.widthExpanded, '_oldWidthExpanded_', paths);
-	replaceVals(oldSizes.heightExpanded, '_oldHeightExpanded_', paths);
-}
-
-replaceVals('_oldWidth_', newSizes.width, paths);
-replaceVals('_oldHeight_', newSizes.height, paths);
-
-if (oldSizes.widthExpanded) {
-	replaceVals('_oldWidthExpanded_', newSizes.widthExpanded, paths);
-	replaceVals('_oldHeightExpanded_', newSizes.heightExpanded, paths);
-}
-
-if (oldSizes.widthExpanded) {
-	replaceVals(oldSizes.widthExpanded + 'x' + oldSizes.heightExpanded, '_oldWidthExpandedXoldHeightExpanded_', paths);
-	replaceVals('_oldWidthExpandedXoldHeightExpanded_', newSizes.widthExpanded + 'x' + newSizes.heightExpanded, paths);
-}
-
-// replace dimensions in index.js files
-keys.forEach(function(key) {
-	replaceVals(oldSizes[key], '_old' + key + '_', indexJSPaths);
-});
-keys.forEach(function(key) {
-	replaceVals('_old' + key + '_', newSizes[key], indexJSPaths);
-});
-
-
-// replace dimensions in sass
-replaceVals(/\$width\: \d+/, '$width: ' + newSizes.width, sassPaths);
-replaceVals({
-	regex: /\$height\: \d+/,
-	replacement: '$height: ' + newSizes.height,
-	paths: sassPaths
-});
-
-if (oldSizes.widthExpanded) {
-	replaceVals(/\$expanded\-width\: \d+/, '$expanded-width: ' + newSizes.widthExpanded, sassPaths);
-	replaceVals(/\$expanded\-height\: \d+/, '$expanded-height: ' + newSizes.heightExpanded, sassPaths);
-}
-
-if (expandedSassPath.length) {
-	replaceVals(/\$width\: \d+/, '$width: ' + newSizes.widthExpanded, expandedSassPath);
-	replaceVals(/\$height\: \d+/, '$height: ' + newSizes.heightExpanded, expandedSassPath);
-}
-
-console.log('Done replacing sizes!');
+performReplacements();
 
 function getPaths(currPath, fileName) {
 	return fs.readdirSync(currPath)
@@ -159,3 +100,65 @@ function replaceVals(search, replace, paths) {
 		paths: paths
 	});
 }
+
+function performReplacements() {
+	console.log('Starting to replace old sizes:');
+	console.log(oldSizes);
+	console.log('With new sizes:');
+	console.log(newSizes);
+
+	replaceTestJS();
+	replaceHTML_and_Gulp();
+	replaceJS();
+	replaceSass();
+
+	console.log('Done replacing sizes!');
+}
+
+function replaceTestJS() {
+	replaceVals(/\.width\)\.not\.toBeGreaterThan\(\d+\)/, '.width).not.toBeGreaterThan(' + newSizes.width + ')', testPath);
+	replaceVals(/\.height\)\.not\.toBeGreaterThan\(\d+\)/, '.height).not.toBeGreaterThan(' + newSizes.height + ')', testPath);
+}
+
+function replaceHTML_and_Gulp() {
+	replaceVals(oldSizes.width, '_oldWidth_', paths);
+	replaceVals(oldSizes.height, '_oldHeight_', paths);
+
+	if (oldSizes.widthExpanded) {
+		replaceVals(oldSizes.widthExpanded, '_oldWidthExpanded_', paths);
+		replaceVals(oldSizes.heightExpanded, '_oldHeightExpanded_', paths);
+		replaceVals(oldSizes.widthExpanded + 'x' + oldSizes.heightExpanded, '_oldWidthExpandedXoldHeightExpanded_', paths);
+	}
+
+	replaceVals('_oldWidth_', newSizes.width, paths);
+	replaceVals('_oldHeight_', newSizes.height, paths);
+
+	if (oldSizes.widthExpanded) {
+		replaceVals('_oldWidthExpanded_', newSizes.widthExpanded, paths);
+		replaceVals('_oldHeightExpanded_', newSizes.heightExpanded, paths);
+		replaceVals('_oldWidthExpandedXoldHeightExpanded_', newSizes.widthExpanded + 'x' + newSizes.heightExpanded, paths);
+	}
+}
+
+function replaceJS() {
+	keys.forEach(function(key) {
+		replaceVals(oldSizes[key], '_old' + key + '_', indexJSPaths);
+		replaceVals('_old' + key + '_', newSizes[key], indexJSPaths);
+	});
+}
+
+function replaceSass() {
+	replaceVals(/\$width\: \d+/, '$width: ' + newSizes.width, sassPaths);
+	replaceVals(/\$height\: \d+/, '$height: ' + newSizes.height, sassPaths);
+
+	if (oldSizes.widthExpanded) {
+		replaceVals(/\$expanded\-width\: \d+/, '$expanded-width: ' + newSizes.widthExpanded, sassPaths);
+		replaceVals(/\$expanded\-height\: \d+/, '$expanded-height: ' + newSizes.heightExpanded, sassPaths);
+	}
+
+	if (expandedSassPath.length) {
+		replaceVals(/\$width\: \d+/, '$width: ' + newSizes.widthExpanded, expandedSassPath);
+		replaceVals(/\$height\: \d+/, '$height: ' + newSizes.heightExpanded, expandedSassPath);
+	}
+}
+
