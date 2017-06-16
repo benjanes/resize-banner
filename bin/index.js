@@ -81,6 +81,11 @@ function getNewSizes(sizes, arg) {
 			sizes.heightExpanded = arg.split('x')[1];
 		}
 	}
+
+	if (arg.match(/\d+k/)) {
+		sizes.k = arg.slice(0, arg.length - 1);
+	}
+
 	return sizes;
 }
 
@@ -120,6 +125,11 @@ function replaceTestJS() {
 	replaceVals(oldSizes.width + 'x' + oldSizes.height, newSizes.width + 'x' + newSizes.height, testPath);
 	replaceVals(/\.width\)\.not\.toBeGreaterThan\(\d+\)/, '.width).not.toBeGreaterThan(' + newSizes.width + ')', testPath);
 	replaceVals(/\.height\)\.not\.toBeGreaterThan\(\d+\)/, '.height).not.toBeGreaterThan(' + newSizes.height + ')', testPath);
+
+	if (newSizes.k) {
+		replaceVals(/should be under \d+kb/, 'should be under ' + newSizes.k + 'kb', testPath); // line 6
+		replaceVals(/fileSizeInKB\)\.not\.toBeGreaterThan\(\d+\)/, 'fileSizeInKB).not.toBeGreaterThan(' + newSizes.k + ')', testPath); // line 11
+	}
 }
 
 function replaceHTML_and_Gulp() {
