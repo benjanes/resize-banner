@@ -111,6 +111,7 @@ function performReplacements() {
 	replaceHTML_and_Gulp();
 	replaceJS();
 	replaceSass();
+	deleteZip();
 
 	console.log('Done replacing sizes!');
 }
@@ -160,5 +161,15 @@ function replaceSass() {
 		replaceVals(/\$width\: \d+/, '$width: ' + newSizes.widthExpanded, expandedSassPath);
 		replaceVals(/\$height\: \d+/, '$height: ' + newSizes.heightExpanded, expandedSassPath);
 	}
+}
+
+function deleteZip() {
+	console.log('Deleting old zip file');
+	var zipPath = fs.readdirSync('./')
+		.filter(function(file) {
+			return /\.zip$/.test(file);
+		})[0];
+
+	fs.unlinkSync('./' + zipPath);
 }
 
