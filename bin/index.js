@@ -123,8 +123,8 @@ function performReplacements() {
 
 function replaceTestJS() {
 	replaceVals(oldSizes.width + 'x' + oldSizes.height, newSizes.width + 'x' + newSizes.height, testPath);
-	replaceVals(/\.width\)\.not\.toBeGreaterThan\(\d+\)/, '.width).not.toBeGreaterThan(' + newSizes.width + ')', testPath);
-	replaceVals(/\.height\)\.not\.toBeGreaterThan\(\d+\)/, '.height).not.toBeGreaterThan(' + newSizes.height + ')', testPath);
+	replaceVals(/\.width\)\.toBe\(\d+\)/, '.width).toBe(' + newSizes.width + ')', testPath);
+	replaceVals(/\.height\)\.toBe\(\d+\)/, '.height).toBe(' + newSizes.height + ')', testPath);
 
 	if (newSizes.k) {
 		replaceVals(/should be under \d+kb/, 'should be under ' + newSizes.k + 'kb', testPath); // line 6
