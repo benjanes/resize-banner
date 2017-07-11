@@ -124,11 +124,13 @@ function performReplacements() {
 function replaceTestJS() {
 	replaceVals(oldSizes.width + 'x' + oldSizes.height, newSizes.width + 'x' + newSizes.height, testPath);
 	replaceVals(/\.width\)\.toBe\(\d+\,/, '.width).toBe(' + newSizes.width + ',', testPath);
+	replaceVals(/It should be \d+px wide/, 'It should be ' + newSizes.width + 'px wide', testPath);
 	replaceVals(/\.height\)\.toBe\(\d+\,/, '.height).toBe(' + newSizes.height + ',', testPath);
+	replaceVals(/It should be \d+px tall/, 'It should be ' + newSizes.height + 'px tall', testPath);
 
 	if (newSizes.k) {
-		replaceVals(/should be under \d+kb/, 'should be under ' + newSizes.k + 'kb', testPath); // line 6
-		replaceVals(/fileSizeInKB\)\.not\.toBeGreaterThan\(\d+\)/, 'fileSizeInKB).not.toBeGreaterThan(' + newSizes.k + ')', testPath); // line 11
+		replaceVals(/should be under \d+kb/, 'should be under ' + newSizes.k + 'kb', testPath);
+		replaceVals(/fileSizeInKB\)\.not\.toBeGreaterThan\(\d+\)/, 'fileSizeInKB).not.toBeGreaterThan(' + newSizes.k + ')', testPath);
 	}
 }
 
